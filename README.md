@@ -1,1 +1,5 @@
-# CODTECH-Task1
+Name:Prateek
+Company:CODTECH IT SOLUTION
+ID:CT08DS1488
+Duration:1st JUNE 2024 to 30Th JUNE 2024
+Mentor:G.SRAVANI
