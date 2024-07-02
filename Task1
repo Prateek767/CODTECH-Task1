@@ -1,0 +1,78 @@
+import re
+from collections import Counter
+
+class PasswordStrengthChecker:
+    def _init_(self, password):
+        self.password = password
+        self.feedback = []
+        self.score = 0
+    
+    def assess_length(self):
+        length = len(self.password)
+        if length >= 12:
+            self.score += 2
+            self.feedback.append("Good length")
+        elif 8 <= length < 12:
+            self.score += 1
+            self.feedback.append("Moderate length")
+        else:
+            self.feedback.append("Too short")
+
+    def assess_complexity(self):
+        if re.search(r'[a-z]', self.password):
+            self.score += 1
+            self.feedback.append("Contains lowercase letter")
+        if re.search(r'[A-Z]', self.password):
+            self.score += 1
+            self.feedback.append("Contains uppercase letter")
+        if re.search(r'[0-9]', self.password):
+            self.score += 1
+            self.feedback.append("Contains number")
+        if re.search(r'[\W_]', self.password):
+            self.score += 1
+            self.feedback.append("Contains special character")
+    
+    def assess_uniqueness(self):
+        common_passwords = set(["password", "123456", "12345678", "abc123", "qwerty", "monkey", "letmein"])
+        if self.password.lower() in common_passwords:
+            self.feedback.append("Common password - too weak")
+        else:
+            self.score += 1
+    
+    def assess_pattern(self):
+        patterns = [r'(.)\1\1', r'123', r'abc', r'password', r'qwerty', r'letmein', r'1234', r'admin', r'login']
+        for pattern in patterns:
+            if re.search(pattern, self.password):
+                self.feedback.append("Predictable pattern found")
+                return
+        self.score += 1
+    
+    def check_strength(self):
+        self.assess_length()
+        self.assess_complexity()
+        self.assess_uniqueness()
+        self.assess_pattern()
+        
+        if self.score <= 3:
+            strength = "Weak"
+        elif 4 <= self.score <= 5:
+            strength = "Moderate"
+        else:
+            strength = "Strong"
+        
+        return strength, self.feedback
+
+def assess_password_strength(password):
+    checker = PasswordStrengthChecker(password)
+    strength, feedback = checker.check_strength()
+    return {
+        "password": password,
+        "strength": strength,
+        "score": checker.score,
+        "feedback": feedback
+    }
+
+# Example Usage
+password = "P@ssw0rd123"
+assessment = assess_password_strength(password)
+print(assessment)
